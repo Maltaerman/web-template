@@ -2,5 +2,7 @@
 </script>
 
 <template>
-  <div>Home view</div>
+  <div class="bg-amber-400 p-2">
+    ToolBar
+  </div>
 </template>
