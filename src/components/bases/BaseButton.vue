@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 
 import BaseLoader from '@/components/bases/BaseLoader.vue';
+import BaseIcon from '@/components/bases/BaseIcon.vue';
 
 const props = defineProps({
   type: {
@@ -232,7 +233,7 @@ const themeBgColorClass = computed(
           loader-size-classes="size-7"
         />
 
-        <!-- <BaseIcon
+        <BaseIcon
           v-if="props.iconName"
           class="shrink-0"
           :class="[
@@ -245,7 +246,7 @@ const themeBgColorClass = computed(
           :format="props.iconFormat"
           :name="props.iconName"
           :transition-class="props.iconTransitionClass"
-        /> -->
+        />
 
         <span
           v-if="!props.isOnlyIcon"

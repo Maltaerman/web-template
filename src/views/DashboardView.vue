@@ -20,6 +20,8 @@ import BaseLabel from '@/components/bases/BaseLabel.vue'
         size="md"
         class="w-fit"
         is-disabled
+        icon-name="user"
+        iconStyleClasses="text-accent-red"
       >
         BaseButton
       </BaseButton>
