@@ -13,7 +13,7 @@ const isCookieBannerShown = ref(false);
       <slot />
     </main>
 
-    <ToolBar class="fixed bottom-0 bg-amber-400 w-full" />
+    <ToolBar class="fixed bottom-0 w-full" />
 
     <CookieBanner v-if="isCookieBannerShown" />
   </div>
