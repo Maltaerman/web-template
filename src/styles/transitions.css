@@ -1,0 +1,16 @@
+
+
+.slide-left-enter-active,
+.slide-left-leave-active {
+  @apply transition-transform duration-300;
+}
+
+.slide-left-enter-from,
+.slide-left-leave-to {
+  @apply -translate-x-full transform;
+}
+
+.slide-left-enter-to,
+.slide-left-leave-from {
+  @apply translate-x-0 transform;
+}
