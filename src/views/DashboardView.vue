@@ -2,6 +2,14 @@
 import BaseButton from '@/components/bases/BaseButton.vue'
 import BaseLabel from '@/components/bases/BaseLabel.vue'
 import BaseLink from '@/components/bases/BaseLink.vue'
+import BaseTabs from '@/components/bases/tabs/BaseTabs.vue'
+
+const tabs = [
+  { id: '1', label: '1' },
+  { id: '1', label: '1' },
+  { id: '1', label: '1' },
+  { id: '1', label: '1' },
+];
 </script>
 
 <template>
@@ -77,5 +85,7 @@ import BaseLink from '@/components/bases/BaseLink.vue'
         BaseLink
       </BaseLink>
     </div>
+
+    <BaseTabs v-bind="{ tabs }" />
   </div>
 </template>
