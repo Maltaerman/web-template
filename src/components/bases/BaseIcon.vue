@@ -1,33 +1,26 @@
 <script setup lang="ts">
-import { useTemplateRef, shallowRef, watch, computed } from 'vue';
+import { useTemplateRef, ref, watch, computed } from 'vue';
 
-const props = defineProps({
-  name: {
-    type: String,
-    required: true,
-  },
+export type IconFormat = 'svg' | 'webp' | 'png';
 
-  fill: {
-    type: String,
-    default: 'currentColor',
-  },
+export interface IProps {
+  name: string;
+  format?: IconFormat;
+  fill?: string
+  stroke?: string;
+  transitionClass?: string;
+}
 
-  stroke: {
-    type: String,
-    default: '',
-  },
-
-  transitionClass: {
-    type: String,
-    default: 'transition-all',
-  },
-
-  format: {
-    type: String,
-    default: 'svg',
-    validator: (format: string) => ['svg', 'webp', 'png'].includes(format),
-  },
-});
+const props = withDefaults(
+  defineProps<IProps>(),
+  {
+    name: '',
+    format: 'svg',
+    fill: 'span',
+    stroke: 'span',
+    transitionClass: 'span',
+  }
+);
 
 const baseIconRef = useTemplateRef('baseIconRef');
 
@@ -38,7 +31,7 @@ const svgModules = import.meta.glob('/src/assets/icons/*.svg', {
   import: 'default',
 });
 
-const icon = shallowRef(null);
+const icon = ref('');
 
 async function loadIcon() {
   console.log('svgModules', svgModules, isSvg.value)
@@ -49,7 +42,7 @@ async function loadIcon() {
 
     if (!svgIcon) throw new Error('Svg Icon with this name does not exist');
 
-    icon.value = svgIcon;
+    icon.value = svgIcon as string;
 
     return;
   }

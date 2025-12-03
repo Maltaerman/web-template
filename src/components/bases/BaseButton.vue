@@ -2,104 +2,43 @@
 import { computed } from 'vue';
 
 import BaseLoader from '@/components/bases/BaseLoader.vue';
-import BaseIcon from '@/components/bases/BaseIcon.vue';
+import BaseIcon, { type IconFormat } from '@/components/bases/BaseIcon.vue';
 
-const props = defineProps({
-  type: {
-    type: String,
-    default: 'button',
-    validator: (type: string) => ['button', 'submit'].includes(type),
-  },
+type ButtonType = 'button' | 'submit';
+type ButtonTheme = 'primary' | 'secondary';
+type ButtonSize = 'md' | 'lg';
+type ButtonIconPosition = 'left' | 'right';
 
-  theme: {
-    type: String,
-    default: 'primary',
-    validator: (theme: string) => ['primary', 'secondary'].includes(theme),
-  },
+export interface IProps {
+  type?: ButtonType;
+  theme?: ButtonTheme;
+  size?: ButtonSize;
+  isDisabled?: boolean;
+  isLoading?: boolean;
+  isSideLess?: boolean;
+  isOnlyIcon?: boolean;
+  iconName?: string;
+  iconStyleClasses?: string;
+  iconFormat?: IconFormat;
+  iconPosition?: ButtonIconPosition;
+}
 
-  size: {
-    type: String,
-    default: 'md',
-    validator: (size: string) => ['md', 'lg'].includes(size),
-  },
-
-  isForceActive: {
-    type: Boolean,
-    default: false,
-  },
-
-  isExact: {
-    type: Boolean,
-    default: false,
-  },
-
-  isDisabled: {
-    type: Boolean,
-    default: false,
-  },
-
-  isLoading: {
-    type: Boolean,
-    default: false,
-  },
-
-  isOnlyIcon: {
-    type: Boolean,
-    default: false,
-  },
-
-  isSideLess: {
-    type: Boolean,
-    default: false,
-  },
-
-  iconName: {
-    type: String,
-    default: '',
-  },
-
-  iconStyleClasses: {
-    type: [String, Array],
-    default: '',
-  },
-
-  iconFormat: {
-    type: String,
-    default: 'svg',
-    validator: (format: string) => ['svg', 'webp', 'png'].includes(format),
-  },
-
-  iconPosition: {
-    type: String,
-    default: 'left',
-    validator: (position: string) => ['left', 'right'].includes(position),
-  },
-
-  iconRotate: {
-    type: String,
-    default: '',
-  },
-
-  iconAnimation: {
-    type: String,
-    default: '',
-  },
-
-  iconTransitionClass: {
-    type: String,
-    default: 'transition-transform',
-  },
-
-  positionClasses: {
-    type: String,
-    default: 'relative',
-  },
-
-  customPadding: {
-    type: String,
-    default: '',
-  },
-});
+const props = withDefaults(
+  defineProps<IProps>(),
+  {
+    type: 'button',
+    theme: 'primary',
+    size: 'md',
+    isDisabled: false,
+    isLoading: false,
+    isSideLess: false,
+    isOnlyIcon: false,
+    iconName: '',
+    iconStyleClasses: '',
+    iconFormat: 'svg',
+    iconPosition: 'left',
+  }
+);
 
 const isPointerEventsNone = computed(() => props.isDisabled || props.isLoading);
 
@@ -148,8 +87,6 @@ const PADDING_MAP = {
 };
 
 const paddingClass = computed(() => {
-  if (props.customPadding) return props.customPadding;
-
   if (props.isSideLess || props.isOnlyIcon) return '';
 
   return PADDING_MAP[props.size];
@@ -196,10 +133,9 @@ const themeBgColorClass = computed(
 
 <template>
   <button
-    class="group/button flex items-center justify-center font-extrabold
+    class="relative group/button flex items-center justify-center font-extrabold
       transition-all duration-300 hover:cursor-pointer"
     :class="[
-      props.positionClasses,
       roundedClass,
       heightClass,
       widthClass,
@@ -238,14 +174,11 @@ const themeBgColorClass = computed(
           class="shrink-0"
           :class="[
             props.iconStyleClasses,
-            props.iconRotate,
-            props.iconAnimation,
             iconSizeClass,
             { invisible: props.isLoading },
           ]"
           :format="props.iconFormat"
           :name="props.iconName"
-          :transition-class="props.iconTransitionClass"
         />
 
         <span

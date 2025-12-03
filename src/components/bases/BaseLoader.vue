@@ -1,8 +1,6 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts" />
 
 <template>
-  <div class="flex items-center justify-center">
-    loading...
-  </div>
+  <div class="border-2 border-gray-300 border-t-green-500 rounded-full animate-spin" />
 </template>
+ 

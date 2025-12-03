@@ -1,10 +1,16 @@
 <script setup lang="ts">
-const props = defineProps({
-  errors: {
-    type: Array,
-    default: () => [],
-  },
-});
+export interface IError {
+  message: string;
+}
+
+export interface IProps {
+  errors: IError[];
+}
+
+const props = withDefaults(
+  defineProps<IProps>(),
+  { errors: () => [] }
+);
 </script>
 
 <template>
