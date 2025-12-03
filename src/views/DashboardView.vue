@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import BaseButton from '@/components/bases/BaseButton.vue'
 import BaseLabel from '@/components/bases/BaseLabel.vue'
-import BaseLink from '@/components/bases/BaseLink.vue'
 import BaseTabs from '@/components/bases/tabs/BaseTabs.vue'
 
 const tabs = [
@@ -67,23 +66,6 @@ const tabs = [
       >
         BaseLabel
       </BaseLabel>
-    </div>
-
-    <div class="m-4 flex flex-col gap-4 w-fit">
-      <BaseLink
-        theme="primary"
-        size="xs"
-      >
-        BaseLink
-      </BaseLink>
-
-      <BaseLink
-        theme="secondary"
-        size="xs"
-        class="w-fit"
-      >
-        BaseLink
-      </BaseLink>
     </div>
 
     <BaseTabs v-bind="{ tabs }" />

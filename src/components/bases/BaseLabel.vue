@@ -1,35 +1,23 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-const props = defineProps({
-  theme: {
-    type: String,
-    default: 'primary',
-    validator: (type) =>
-      ['primary', 'secondary'].includes(type),
-  },
+type LabelTheme = 'primary' | 'secondary';
+type LabelSize = 'md' | 'lg';
 
-  size: {
-    type: String,
-    default: 'md',
-    validator: (type) => ['md', 'lg'].includes(type),
-  },
+export interface IProps {
+  theme?: LabelTheme;
+  size?: LabelSize
+  tag?: string;
+}
 
-  tag: {
-    type: String,
-    default: 'span',
-  },
-
-  title: {
-    type: String,
-    default: '',
-  },
-
-  isUppercase: {
-    type: Boolean,
-    default: true,
-  },
-});
+const props = withDefaults(
+  defineProps<IProps>(),
+  {
+    theme: 'primary',
+    size: 'md',
+    tag: 'span',
+  }
+);
 
 const BACKGROUND_MAP = {
   primary: 'bg-neutral-300',
@@ -39,9 +27,8 @@ const BACKGROUND_MAP = {
 const bgColorClass = computed(() => BACKGROUND_MAP[props.theme]);
 
 const ROUNDED_MAP = {
-  xxs: 'rounded-2',
-  xs: 'rounded-4',
-  sm2: 'rounded-4',
+  md: 'rounded-2',
+  lg: 'rounded-4',
 };
 
 const roundedClass = computed(() => ROUNDED_MAP[props.size]);
@@ -59,8 +46,6 @@ const PADDING_MAP_MAP = {
 };
 
 const paddingClasses = computed(() => PADDING_MAP_MAP[props.size]);
-
-const textColorClass = computed(() => 'text-neutral-100');
 </script>
 
 <template>
@@ -71,8 +56,8 @@ const textColorClass = computed(() => 'text-neutral-100');
     <component
       :is="props.tag"
       class="inline-flex items-center justify-center whitespace-nowrap px-1
-        align-middle"
-      :class="[bgColorClass, roundedClass, paddingClasses, textColorClass]"
+        align-middle text-neutral-100"
+      :class="[bgColorClass, roundedClass, paddingClasses]"
     >
       <slot />
     </component>
