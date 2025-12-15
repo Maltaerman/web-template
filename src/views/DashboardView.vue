@@ -53,14 +53,13 @@ const tabs = [
 
     <div class="m-4 flex flex-col gap-4 w-fit">
       <BaseLabel
-        theme="primary"
         size="md"
       >
         BaseLabel
       </BaseLabel>
 
       <BaseLabel
-        theme="secondary"
+        theme="green"
         size="lg"
         class="w-fit"
       >
