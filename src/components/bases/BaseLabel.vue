@@ -8,6 +8,7 @@ export interface IProps {
   theme?: LabelTheme;
   size?: LabelSize
   tag?: string;
+  transitionClasses?: string;
 }
 
 const props = withDefaults(
@@ -16,6 +17,7 @@ const props = withDefaults(
     theme: 'orange',
     size: 'md',
     tag: 'span',
+    transitionClasses: 'transition-colors duration-300',
   }
 );
 
@@ -46,8 +48,8 @@ const ROUNDED_MAP = {
 };
 
 const TEXT_MAP = {
-  md: 'font-normal text-sm',
-  lg: 'font-bold text-lg',
+  md: 'text-neutral-100 font-normal text-sm',
+  lg: 'text-neutral-100 font-bold text-lg',
 };
 
 const bgColorClass = computed(() => BACKGROUND_MAP[props.theme]);
@@ -62,17 +64,12 @@ const textClasses = computed(() => TEXT_MAP[props.size]);
 </script>
 
 <template>
-  <div
-    class="flex"
-    :class="sizeClasses"
+  <component
+    :is="props.tag"
+    class="flex items-center justify-center whitespace-nowrap
+      align-middle"
+    :class="[sizeClasses, bgColorClass, roundedClass, paddingClasses, textClasses, props.transitionClasses]"
   >
-    <component
-      :is="props.tag"
-      class="inline-flex items-center justify-center whitespace-nowrap
-        align-middle text-light"
-      :class="[bgColorClass, roundedClass, paddingClasses, textClasses]"
-    >
-      <slot />
-    </component>
-  </div>
+    <slot />
+  </component>
 </template>
