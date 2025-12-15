@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-type LabelTheme = 'primary' | 'secondary';
+type LabelTheme = 'orange' | 'yellow' | 'green' | 'blue' | 'pink' | 'violet' | 'grey';
 type LabelSize = 'md' | 'lg';
 
 export interface IProps {
@@ -13,51 +13,64 @@ export interface IProps {
 const props = withDefaults(
   defineProps<IProps>(),
   {
-    theme: 'primary',
+    theme: 'orange',
     size: 'md',
     tag: 'span',
   }
 );
 
 const BACKGROUND_MAP = {
-  primary: 'bg-neutral-300',
-  secondary: 'bg-neutral-600',
+  orange: 'bg-accent-orange',
+  yellow: 'bg-accent-yellow',
+  green: 'bg-accent-green',
+  blue: 'bg-accent-blue',
+  pink: 'bg-accent-pink',
+  violet: 'bg-accent-violet',
+  grey: 'bg-accent-grey',
 };
 
-const bgColorClass = computed(() => BACKGROUND_MAP[props.theme]);
-
-const ROUNDED_MAP = {
-  md: 'rounded-2',
-  lg: 'rounded-4',
+const SIZE_MAP = {
+  md: 'h-5',
+  lg: 'h-8',
 };
 
-const roundedClass = computed(() => ROUNDED_MAP[props.size]);
-
-const HEIGHT_MAP = {
-  md: 'h-3',
-  lg: 'h-4',
-};
-
-const heightClass = computed(() => HEIGHT_MAP[props.size]);
 
 const PADDING_MAP_MAP = {
   md: 'px-2 py-2',
   lg: 'px-3 py-2',
 };
 
+const ROUNDED_MAP = {
+  md: 'rounded-sm',
+  lg: 'rounded-sm',
+};
+
+const TEXT_MAP = {
+  md: 'font-normal text-sm',
+  lg: 'font-bold text-lg',
+};
+
+const bgColorClass = computed(() => BACKGROUND_MAP[props.theme]);
+
+const sizeClasses = computed(() => SIZE_MAP[props.size]);
+
 const paddingClasses = computed(() => PADDING_MAP_MAP[props.size]);
+
+const roundedClass = computed(() => ROUNDED_MAP[props.size]);
+
+const textClasses = computed(() => TEXT_MAP[props.size]);
 </script>
 
 <template>
   <div
     class="flex"
-    :class="heightClass"
+    :class="sizeClasses"
   >
     <component
       :is="props.tag"
-      class="inline-flex items-center justify-center whitespace-nowrap px-1
-        align-middle text-neutral-100"
-      :class="[bgColorClass, roundedClass, paddingClasses]"
+      class="inline-flex items-center justify-center whitespace-nowrap
+        align-middle text-light"
+      :class="[bgColorClass, roundedClass, paddingClasses, textClasses]"
     >
       <slot />
     </component>
