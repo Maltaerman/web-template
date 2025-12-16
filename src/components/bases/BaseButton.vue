@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { defineAsyncComponent, computed } from 'vue';
 
-import BaseLoader from '@/components/bases/BaseLoader.vue';
-import BaseIcon, { type IconFormat } from '@/components/bases/BaseIcon.vue';
+const BaseLoader = defineAsyncComponent(() => import('@/components/bases/BaseLoader.vue'));
 
 type ButtonType = 'button' | 'submit';
 type ButtonTheme = 'primary' | 'secondary';
 type ButtonSize = 'md' | 'lg';
-type ButtonIconPosition = 'left' | 'right';
 
 export interface IProps {
   type?: ButtonType;
@@ -15,12 +13,7 @@ export interface IProps {
   size?: ButtonSize;
   isDisabled?: boolean;
   isLoading?: boolean;
-  isSideLess?: boolean;
-  isOnlyIcon?: boolean;
-  iconName?: string;
-  iconStyleClasses?: string;
-  iconFormat?: IconFormat;
-  iconPosition?: ButtonIconPosition;
+  transitionClasses?: string;
 }
 
 const props = withDefaults(
@@ -31,79 +24,48 @@ const props = withDefaults(
     size: 'md',
     isDisabled: false,
     isLoading: false,
-    isSideLess: false,
-    isOnlyIcon: false,
-    iconName: '',
-    iconStyleClasses: '',
-    iconFormat: 'svg',
-    iconPosition: 'left',
+    transitionClasses: 'transition-colors duration-300',
   }
 );
-
-const isPointerEventsNone = computed(() => props.isDisabled || props.isLoading);
-
-const TEXT_SIZE_MAP = {
-  md: 'text-sm2',
-  lg: 'text-md',
-};
-
-const textSizeClass = computed(() => TEXT_SIZE_MAP[props.size]);
-
-const ICON_SIZE_MAP = {
-  md: 'size-5',
-  lg: 'size-5',
-};
-
-const iconSizeClass = computed(() => ICON_SIZE_MAP[props.size]);
-
-const ROUNDED_MAP = {
-  md: 'rounded-8',
-  lg: 'rounded-12',
-};
-
-const roundedClass = computed(() => ROUNDED_MAP[props.size]);
 
 const HEIGHT_MAP = {
   md: 'h-8',
   lg: 'h-11',
 };
 
-const heightClass = computed(() => HEIGHT_MAP[props.size]);
-
-const WIDTH_MAP = {
-  md: 'w-8',
-  lg: 'w-11',
-};
-
-const widthClass = computed(() => {
-  if (!props.isOnlyIcon) return '';
-
-  return WIDTH_MAP[props.size];
-});
-
 const PADDING_MAP = {
   md: 'px-4',
   lg: 'px-8',
 };
 
-const paddingClass = computed(() => {
-  if (props.isSideLess || props.isOnlyIcon) return '';
+const ROUNDED_MAP = {
+  md: 'rounded-sm',
+  lg: 'rounded-md',
+};
 
-  return PADDING_MAP[props.size];
-});
+const TEXT_MAP = {
+  md: 'text-light font-normal text-sm',
+  lg: 'text-light font-bold text-lg',
+};
+
+const isPointerEventsNone = computed(() => props.isDisabled || props.isLoading);
+
+const textClasses = computed(() => TEXT_MAP[props.size]);
+
+const roundedClass = computed(() => ROUNDED_MAP[props.size]);
+
+const heightClass = computed(() => HEIGHT_MAP[props.size]);
+
+const paddingClass = computed(() => PADDING_MAP[props.size]);
 
 const textColorClass = computed(
   () => {
     switch (props.theme) {
       case 'primary':
-        return props.isDisabled
-          ? 'text-neutral-600'
-          : 'text-neutral-100';
+        return props.isDisabled ? 'text-neutral-400' : 'text-light';
 
       case 'secondary':
-        return props.isDisabled
-          ? 'text-neutral-600'
-          : 'text-neutral-200';
+        return props.isDisabled ? 'text-neutral-200' : 'text-light';
 
       default:
         return '';
@@ -111,18 +73,14 @@ const textColorClass = computed(
   }
 );
 
-const themeBgColorClass = computed(
+const backgroundClasses = computed(
   () => {
     switch (props.theme) {
       case 'primary':
-        return props.isDisabled
-          ? 'bg-neutral-100'
-          : `bg-neutral-600 hover:group-hover/button:bg-neutral-500 hover:group-active/button:bg-neutral-400`;
+        return props.isDisabled ? 'bg-neutral-100' : 'bg-primary-500 hover:bg-primary-600 active:bg-primary-400';
 
       case 'secondary':
-        return props.isDisabled
-          ? 'bg-neutral-100'
-          : `bg-neutral-300 hover:group-hover/button:bg-neutral-200 hover:group-active/button:bg-neutral-100`;
+        return props.isDisabled ? 'bg-neutral-100' : 'bg-neutral-500 hover:bg-neutral-600 active:bg-neutral-400';
 
       default:
         return '';
@@ -133,58 +91,27 @@ const themeBgColorClass = computed(
 
 <template>
   <button
-    class="relative group/button flex items-center justify-center font-extrabold
-      transition-all duration-300 hover:cursor-pointer"
+    class="relative flex items-center justify-center hover:cursor-pointer"
     :class="[
-      roundedClass,
       heightClass,
-      widthClass,
+      paddingClass,
+      roundedClass,
       textColorClass,
-      textSizeClass,
-      {
-        'pointer-events-none': isPointerEventsNone,
-        'shrink-0': props.isOnlyIcon,
-      },
+      backgroundClasses,
+      props.transitionClasses,
+      { 'pointer-events-none': isPointerEventsNone },
     ]"
   >
-    <div
-      class="flex size-full shrink-0 items-center justify-center gap-1
-        transition-all duration-300"
-      :class="[
-        roundedClass,
-        paddingClass,
-        themeBgColorClass,
-        { 'flex-row-reverse': props.iconPosition === 'right' },
-      ]"
-    >
+    <div class="flex size-full shrink-0 items-center justify-center">
       <slot name="content">
         <BaseLoader
           v-if="props.isLoading"
-          container-position-classes="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-          :loader-color-class="
-            props.theme === 'secondary'
-              ? 'fill-text-purple'
-              : 'fill-surface-primary'
-          "
-          loader-size-classes="size-7"
-        />
-
-        <BaseIcon
-          v-if="props.iconName"
-          class="shrink-0"
-          :class="[
-            props.iconStyleClasses,
-            iconSizeClass,
-            { invisible: props.isLoading },
-          ]"
-          :format="props.iconFormat"
-          :name="props.iconName"
+          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-4"
         />
 
         <span
-          v-if="!props.isOnlyIcon"
           class="truncate"
-          :class="{ invisible: props.isLoading }"
+          :class="[textClasses, { invisible: props.isLoading }]"
         >
           <slot />
         </span>
