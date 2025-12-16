@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick, useTemplateRef } from 'vue';
+import { ref, computed, useTemplateRef } from 'vue';
 
 import BaseValidationErrors, { type IError } from './BaseValidationErrors.vue';
 
@@ -13,11 +13,10 @@ export interface IProps {
   label?: string;
   isDisabled?: boolean;
   isLoading?: boolean;
-  isReadonly?: boolean;
   isValid?: boolean;
   isInvalid?: boolean;
-  isFocusedOnMounted?: boolean;
   errors?: IError[];
+  transitionClasses?: string;
 }
 
 const props = withDefaults(
@@ -32,55 +31,61 @@ const props = withDefaults(
     label: '',
     isDisabled: false,
     isLoading: false,
-    isReadonly: false,
-    isValid: true,
+    isValid: false,
     isInvalid: false,
-    isFocusedOnMounted: false,
-    errors: (): IError[] => []
+    errors: (): IError[] => [],
+    transitionClasses: 'transition-colors duration-300',
   }
 );
 
-const emit = defineEmits(['input-blur', 'input-focus']);
+const emit = defineEmits(['update:modelValue', 'input-blur', 'input-focus']);
 
-const model = ref('');
+const model = computed({
+  get: () => props.modelValue,
+  set: (value) => emit('update:modelValue', value),
+});
 
 const isFocused = ref(false);
 
 const inputRef = useTemplateRef('inputRef');
 
 const inputInnerBorderColor = computed(() => {
-  if (props.isInvalid) return 'border-neutral-100';
-  if (props.isDisabled) return 'border-neutral-100';
-  if (props.isValid) return 'border-neutral-100';
-  if (isFocused.value) return 'border-neutral-100';
+  if (props.isInvalid) return 'border-accent-red';
+  if (props.isValid) return 'border-accent-green';
+  if (props.isDisabled) return 'border-neutral-500';
+  if (isFocused.value) return 'border-neutral-200';
 
-  return 'border-neutral-100';
+  return 'border-neutral-500';
 });
 
 const inputBackgroundColor = computed(() => {
-  if (props.isDisabled) return 'bg-neutral-300';
+  if (props.isDisabled) return 'bg-neutral-600';
 
-  return 'bg-neutral-300';
+  return 'bg-neutral-950';
 });
 
-const inputTextColor = computed(() => {
+const textColor = computed(() => {
+  if (props.isInvalid) return 'text-accent-red';
+  if (props.isValid) return 'text-accent-green';
   if (isFocused.value) return 'text-neutral-200';
 
-  return 'text-neutral-200';
+  return 'text-neutral-500';
 });
 
 const inputPlaceholderColor = computed(() => {
-  if (isFocused.value) return 'placeholder-neutral-200';
+  if (props.isInvalid) return 'text-placeholder-red';
+  if (props.isValid) return 'text-placeholder-green';
+  if (isFocused.value) return 'text-placeholder-200';
 
-  return 'placeholder-neutral-200';
+  return 'placeholder-neutral-500';
 });
 
 const inputClasses = computed(() => [
-  'group relative h-11 p-3 w-full appearance-none border outline-none transition-colors duration-300 placeholder-shown:truncate [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
   inputInnerBorderColor.value,
   inputBackgroundColor.value,
-  inputTextColor.value,
+  textColor.value,
   inputPlaceholderColor.value,
+  props.transitionClasses,
 ]);
 
 const inputProps = computed(() => ({
@@ -88,10 +93,9 @@ const inputProps = computed(() => ({
   name: props.name,
   type: props.type,
   disabled: props.isDisabled,
-  readonly: props.isReadOnly,
   autocomplete: props.autocomplete,
-  class: inputClasses.value,
   placeholder: props.placeholder,
+  class: inputClasses.value
 }));
 
 function handleBlur() {
@@ -105,43 +109,30 @@ function handleFocus() {
 
   emit('input-focus', props.name);
 }
-
-function focus() {
-  if (!props.isFocusedOnMounted) return;
-
-  nextTick(() => {
-    if (inputRef.value) inputRef.value.focus()
-  });
-}
-
-onMounted(focus);
 </script>
 
 <template>
-  <div
-    :class="{
-      'pointer-events-none': props.isDisabled,
-      '--isValid': props.isValid,
-      '--isInvalid': props.isInvalid,
-    }"
-  >
+  <div :class="[
+    { 'pointer-events-none': props.isDisabled },
+    props.transitionClasses
+  ]">
     <div class="select-none">
       <label
         v-if="props.label"
-        class="block pb-1 text-sm font-semibold text-neutral-200 text-left"
+        class="block pl-1 pb-1 text-sm font-normal text-left"
+        :class="textColor"
         :for="props.id"
         v-text="props.label"
       />
 
-      <div class="group relative flex transition-colors duration-300">
-        <input
-          ref="inputRef"
-          v-model="model"
-          v-bind="inputProps"
-          @blur="handleBlur"
-          @focus="handleFocus"
-        />
-      </div>
+      <input
+        ref="inputRef"
+        v-model="model"
+        v-bind="inputProps"
+        class="group relative h-11 p-3 w-full appearance-none border outline-none rounded-sm"
+        @blur="handleBlur"
+        @focus="handleFocus"
+      />
     </div>
 
     <BaseValidationErrors
