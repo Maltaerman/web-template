@@ -31,36 +31,25 @@ const inputModel = ref('');
     <div class="m-4 flex flex-col gap-4 w-fit">
       <BaseButton
         class="w-fit"
-        is-loading
       >
-        BaseButton
-      </BaseButton>
-
-      <BaseButton
-        theme="primary"
-        size="md"
-        class="w-fit"
-        isInvalid
-        icon-name="user"
-        iconStyleClasses="text-accent-red"
-      >
-        BaseButton
-      </BaseButton>
-
-      <BaseButton
-        theme="primary"
-        class="w-fit"
-        size="md"
-      >
-          BaseButton
+        BaseButton 1
       </BaseButton>
 
       <BaseButton
         theme="secondary"
-        class="w-fit"
         size="lg"
+        class="w-fit"        
       >
-        BaseButton
+        BaseButton 2
+      </BaseButton>
+
+      <BaseButton
+        theme="secondary"
+        size="lg"
+        class="w-fit"
+        is-loading
+      >
+        BaseButton 3
       </BaseButton>
     </div>
 

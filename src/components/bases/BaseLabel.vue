@@ -48,8 +48,8 @@ const ROUNDED_MAP = {
 };
 
 const TEXT_MAP = {
-  md: 'text-neutral-100 font-normal text-sm',
-  lg: 'text-neutral-100 font-bold text-lg',
+  md: 'text-light font-normal text-sm',
+  lg: 'text-light font-bold text-lg',
 };
 
 const bgColorClass = computed(() => BACKGROUND_MAP[props.theme]);
